@@ -1,0 +1,231 @@
+body {
+  font-family: 'Playfair Display', serif;
+  margin: 0;
+  padding: 0;
+  background: url("https://img.freepik.com/free-vector/beige-curve-abstract-vector-background_53876-114017.jpg?semt=ais_hybrid&w=740") center/cover no-repeat fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: #3e2f24;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3e2f24;
+  padding: 15px 30px;
+  color: #efe4d2;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #EFE4D2; 
+  text-decoration: none; 
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  
+  gap: 25px;
+}
+
+.nav-btn {
+  background: #efe4d2;
+  color: #3e2f24;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: #b89b74;
+  color: #fff;
+}
+
+.notification-btn {
+  font-size: 20px;
+  background: transparent;
+  color: #efe4d2;
+  padding: 5px 10px;
+}
+
+.profile-menu-container {
+  position: relative;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #efe4d2;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 2rem;
+  /* simple avatar circle, can add background image here */
+}
+
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background: #efe4d2;
+  color: #3e2f24;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 0.15);
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  z-index: 100;
+}
+
+.profile-dropdown a {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #3e2f24;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-dropdown a:hover {
+  background-color: #b89b74;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+section {
+  padding: 2rem 3rem;
+  display: none;
+  max-width: 900px;
+  margin: auto;
+  background: rgba(239, 228, 210, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+section.active {
+  display: block;
+}
+
+form {
+  max-width: 600px;
+  margin: auto;
+  background-color: #EFE4D2;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  font-family: 'Georgia', serif;
+}
+
+form h2 {
+  margin-top: 0;
+  color: #7b5e48;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="datetime-local"],
+input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0 20px;
+  border: 1px solid #b89b74;
+  border-radius: 12px;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  color: #3e2f24;
+  background: #f8f0e3;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="datetime-local"]:focus,
+input[type="file"]:focus {
+  outline: none;
+  border-color: #7b5e48;
+  background: #fff;
+}
+
+button,
+input[type="submit"] {
+  background-color: #7b5e48;
+  color: white;
+  padding: 12px 26px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #5e4a3d;
+}
+
+.result-box,
+.message-box {
+  max-width: 600px;
+  margin: 20px auto;
+  background-color: #f3e9d2;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: 'Georgia', serif;
+  color: #5e4a3d;
+  box-shadow: 0 4px 8px rgba(123, 94, 72, 0.3);
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  background-color: #ddd;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(123, 94, 72, 0.4);
+}
+
+.notification-item {
+  background-color: #EFE4D2;
+  border: 1px solid #b89b74;
+  padding: 18px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  font-family: 'Georgia', serif;
+  color: #5e4a3d;
+  box-shadow: 0 3px 8px rgba(123, 94, 72, 0.2);
+}
+
+.notification-item button {
+  margin-right: 12px;
+  background-color: #7b5e48;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  transition: background-color 0.3s ease;
+}
+
+.notification-item button:hover {
+  background-color: #5e4a3d;
+}

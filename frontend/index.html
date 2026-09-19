@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brain Trade - Home</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">BrainTrade</div>
+    <div class="nav-links">
+      <a href="#" id="navRegister">Register</a>
+      <a href="#" id="navLogin">Login</a>
+    </div>
+  </nav>
+
+  <!-- Main shifting layout -->
+  <div class="main-content" id="mainContent">
+    <div class="title-section" id="titleSection">
+      <h1 class="title">BrainTrade</h1>
+      <p class="subtitle">A platform where you exchange skills, not money.</p>
+    </div>
+
+    <div class="form-side" id="formSide">
+      <!-- Register Form -->
+      <div class="form-container" id="registerForm">
+        <h2>Register</h2>
+        <div class="error-message" id="registerError"></div>
+        <div class="success-message" id="registerSuccess"></div>
+
+        <label>Name</label>
+        <input type="text" id="regName" required />
+
+        <label>Email</label>
+        <input type="email" id="regEmail" required />
+
+        <label>Skill You Have</label>
+        <input type="text" id="regSkillHave" required />
+
+        <label>Skill You Want</label>
+        <input type="text" id="regSkillWant" required />
+
+        <label>Password</label>
+        <input type="password" id="regPassword" required />
+
+        <button id="registerBtn">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="form-container" id="loginForm">
+        <h2>Login</h2>
+        <div class="error-message" id="loginError"></div>
+
+        <label>Email</label>
+        <input type="email" id="loginEmail" required />
+
+        <label>Password</label>
+        <input type="password" id="loginPassword" required />
+
+        <button id="loginBtn">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>

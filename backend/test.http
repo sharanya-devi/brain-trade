@@ -1,0 +1,9 @@
+POST http://127.0.0.1:5000/add-user
+Content-Type: application/json
+
+{
+  "name": "Ashish",
+  "email": "ashish@example.com",
+  "skill_have": "Digital Marketing",
+  "skill_want": "Graphic Design"
+}

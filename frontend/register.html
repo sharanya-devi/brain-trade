@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Brain Trade</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Register at Brain Trade</h1>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <form id="registerForm">
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input type="email" id="email" placeholder="Email Address" required />
+        <input type="text" id="skill_have" placeholder="Skill You Have" required />
+        <input type="text" id="skill_want" placeholder="Skill You Want" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Register</button>
+        <p id="regMessage"></p>
+      </form>
+    </div>
+    <div class="center-buttons">
+      <a href="login.html" class="btn">Already Registered? Login</a>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const skill_have = document.getElementById('skill_have').value.trim();
+      const skill_want = document.getElementById('skill_want').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      const response = await fetch('http://localhost:5000/add-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, skill_have, skill_want, password })
+      });
+
+      const result = await response.json();
+      const msg = document.getElementById('regMessage');
+
+      if (response.ok) {
+        msg.style.color = 'green';
+        msg.innerText = result.message;
+        setTimeout(() => window.location.href = 'login.html', 1500);
+      } else {
+        msg.style.color = 'red';
+        msg.innerText = result.error || 'Registration failed';
+      }
+    });
+  </script>
+</body>
+</html>

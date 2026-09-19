@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brain Trade - Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="logo-link">
+      <div class="logo">BrainTrade</div>
+    </a>
+    <div class="nav-right">
+      <button class="nav-btn" id="nav-match">Find Match</button>
+      <button class="nav-btn" id="nav-schedule">Schedule Session</button>
+      <button class="nav-btn" id="nav-notifications">Notifications</button>
+      <button class="nav-btn" id="nav-credits">Credits: <span id="userCredits">100</span></button>
+      <div class="profile-menu-container">
+        <div id="profile-icon" class="profile-icon" title="Profile"></div>
+        <div id="profile-dropdown" class="profile-dropdown hidden">
+          <a href="#view-profile" id="view-profile-link">View Profile</a>
+          <a href="#upload-cert" id="nav-upload-cert">Upload Certificate</a>
+          <a href="videocall.html" id="nav-videocall">Video Call</a>
+          <a href="#" id="logout-link">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Match Finding Section -->
+    <section id="matchSection" class="active">
+      <h2>Find Skill Matches</h2>
+      <form id="matchForm">
+        <label for="match_have">Your Skill (What you can teach):</label>
+        <input type="text" id="match_have" placeholder="e.g. Python" required />
+        <label for="match_want">Skill You Want to Learn:</label>
+        <input type="text" id="match_want" placeholder="e.g. Graphic Design" required />
+        <button type="submit">Find Match</button>
+      </form>
+      <div id="matchResult" class="result-box">Matches will appear here...</div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profileSection">
+      <h2>Your Profile</h2>
+      <form id="profileForm">
+        <label for="profile_email">Email:</label>
+        <input type="email" id="profile_email" readonly />
+        <button type="submit">Refresh Profile</button>
+      </form>
+      <div id="profileResult" class="profile-display">
+        <div class="profile-pic"></div>
+        <p>Click Refresh Profile to load details.</p>
+      </div>
+    </section>
+
+    <!-- Notifications Section -->
+    <section id="notificationSection">
+      <h2>Notifications</h2>
+      <form id="notificationForm">
+        <label for="notif_email">Your Email:</label>
+        <input type="email" id="notif_email" readonly />
+        <button type="submit">Refresh Notifications</button>
+      </form>
+      <div id="notificationMessage" class="notification-list">No notifications yet.</div>
+    </section>
+
+    <!-- Session Scheduling Section -->
+    <section id="sessionSection">
+      <h2>Schedule Session</h2>
+      <form id="sessionForm">
+        <label for="user1_email">Your Email:</label>
+        <input type="email" id="user1_email" readonly />
+        <label for="user2_email">Partner's Email:</label>
+        <input type="email" id="user2_email" placeholder="partner@example.com" required />
+        <label for="datetime">Date & Time:</label>
+        <input type="datetime-local" id="datetime" required />
+        <button type="submit">Schedule Session</button>
+      </form>
+      <div id="sessionMessage" class="result-box"></div>
+    </section>
+
+    <!-- Certificate Upload Section -->
+    <section id="certSection">
+      <h2>Upload Skill Certificate</h2>
+      <form id="certForm">
+        <label for="cert_email">Your Email:</label>
+        <input type="email" id="cert_email" readonly />
+        <label for="certificate">Certificate File (Image / Document):</label>
+        <input type="file" id="certificate" required />
+        <button type="submit">Upload Certificate</button>
+      </form>
+      <div id="certMessage" class="result-box"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

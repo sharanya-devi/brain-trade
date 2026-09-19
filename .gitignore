@@ -1,0 +1,21 @@
+# Environment variables
+.env
+
+# Firebase credentials
+firebase_key.json
+firebase_key.json.json
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Node.js
+node_modules/
+
+# Uploaded files
+uploads/
+
+# VS Code
+.vscode/

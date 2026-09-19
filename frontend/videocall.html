@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Trade - Video Call</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <style>
+    .video-page {
+      max-width: 1000px;
+      margin: 100px auto 40px;
+      padding: 24px;
+      background: rgba(239, 228, 210, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+    .video-header {
+      margin-bottom: 20px;
+    }
+    .room-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: #3e2f24;
+      color: #efe4d2;
+      border-radius: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+    .status-text {
+      margin-top: 10px;
+      font-family: 'Segoe UI', sans-serif;
+      font-weight: 600;
+      color: #7b5e48;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 24px 0;
+    }
+    @media (max-width: 768px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .video-card {
+      background: #2c2c2c;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .video-label {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .control-btn {
+      background: #7b5e48;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: 'Segoe UI', sans-serif;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .control-btn:hover {
+      background: #5e4a3d;
+    }
+    .control-btn.danger {
+      background: #c0392b;
+    }
+    .control-btn.danger:hover {
+      background: #962d22;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div class="logo">BrainTrade</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Back to Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="video-page">
+    <div class="video-header">
+      <h2 style="margin: 0; color: #3e2f24;">Live Skill Session</h2>
+      <div class="room-badge">Room ID: <span id="roomIdDisplay">Loading...</span></div>
+      <div class="status-text" id="callStatus">Initializing camera and microphone...</div>
+    </div>
+
+    <div class="video-grid">
+      <div class="video-card">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <span class="video-label">You (Local)</span>
+      </div>
+      <div class="video-card">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <span class="video-label">Partner (Remote)</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn" id="toggleAudioBtn">Mute Mic</button>
+      <button class="control-btn" id="toggleVideoBtn">Turn Off Camera</button>
+      <button class="control-btn danger" id="endCallBtn">End Session</button>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('room') || 'braintrade-session-room';
+    document.getElementById('roomIdDisplay').textContent = roomId;
+
+    const callStatus = document.getElementById('callStatus');
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    const toggleAudioBtn = document.getElementById('toggleAudioBtn');
+    const toggleVideoBtn = document.getElementById('toggleVideoBtn');
+    const endCallBtn = document.getElementById('endCallBtn');
+
+    let localStream = null;
+    let peerConnection = null;
+    let socket = null;
+
+    const rtcConfig = {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+      ]
+    };
+
+    async function initCall() {
+      // 1. Get user media
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideo.srcObject = localStream;
+        callStatus.textContent = 'Camera ready. Connecting to signaling server...';
+      } catch (err) {
+        console.warn('Could not acquire real camera/mic:', err);
+        callStatus.textContent = 'Notice: Camera/microphone not found or permission denied. Starting in simulated mode.';
+        // Create canvas dummy stream for testing if camera is absent
+        const canvas = document.createElement('canvas');
+        canvas.width = 640;
+        canvas.height = 480;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#3e2f24';
+        ctx.fillRect(0, 0, 640, 480);
+        ctx.fillStyle = '#efe4d2';
+        ctx.font = '24px Georgia';
+        ctx.fillText('Camera Simulated Stream', 180, 240);
+        localStream = canvas.captureStream(15);
+        localVideo.srcObject = localStream;
+      }
+
+      // 2. Connect to Socket.IO signaling server
+      try {
+        socket = io('http://localhost:3000');
+
+        socket.on('connect', () => {
+          console.log('Connected to signaling server with socket ID:', socket.id);
+          callStatus.textContent = `Connected to room: ${roomId}. Waiting for partner to join...`;
+          socket.emit('join', roomId);
+        });
+
+        socket.on('user-joined', async (peerId) => {
+          console.log('Peer joined:', peerId);
+          callStatus.textContent = 'Partner connected! Initiating peer video stream...';
+          setupPeerConnection();
+          const offer = await peerConnection.createOffer();
+          await peerConnection.setLocalDescription(offer);
+          socket.emit('signal', { room: roomId, signal: offer });
+        });
+
+        socket.on('signal', async (data) => {
+          const signal = data.signal;
+          if (!peerConnection) setupPeerConnection();
+
+          if (signal.type === 'offer') {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(signal));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.emit('signal', { room: roomId, signal: answer });
+            callStatus.textContent = 'Video call connected!';
+          } else if (signal.type === 'answer') {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(signal));
+            callStatus.textContent = 'Video call connected!';
+          } else if (signal.candidate) {
+            try {
+              await peerConnection.addIceCandidate(new RTCIceCandidate(signal));
+            } catch (e) {
+              console.error('Error adding ICE candidate:', e);
+            }
+          }
+        });
+
+        socket.on('user-left', () => {
+          callStatus.textContent = 'Partner left the session.';
+          if (remoteVideo.srcObject) {
+            remoteVideo.srcObject.getTracks().forEach(t => t.stop());
+            remoteVideo.srcObject = null;
+          }
+        });
+      } catch (err) {
+        console.error('Signaling server error:', err);
+        callStatus.textContent = 'Signaling server offline. You can still preview your local camera.';
+      }
+    }
+
+    function setupPeerConnection() {
+      if (peerConnection) return;
+      peerConnection = new RTCPeerConnection(rtcConfig);
+
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, localStream);
+        });
+      }
+
+      peerConnection.ontrack = (event) => {
+        console.log('Received remote stream');
+        remoteVideo.srcObject = event.streams[0];
+        callStatus.textContent = 'Session active with partner!';
+      };
+
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate && socket) {
+          socket.emit('signal', { room: roomId, signal: event.candidate });
+        }
+      };
+    }
+
+    // Toggle audio
+    toggleAudioBtn.addEventListener('click', () => {
+      if (localStream && localStream.getAudioTracks().length > 0) {
+        const audioTrack = localStream.getAudioTracks()[0];
+        audioTrack.enabled = !audioTrack.enabled;
+        toggleAudioBtn.textContent = audioTrack.enabled ? 'Mute Mic' : 'Unmute Mic';
+      }
+    });
+
+    // Toggle video
+    toggleVideoBtn.addEventListener('click', () => {
+      if (localStream && localStream.getVideoTracks().length > 0) {
+        const videoTrack = localStream.getVideoTracks()[0];
+        videoTrack.enabled = !videoTrack.enabled;
+        toggleVideoBtn.textContent = videoTrack.enabled ? 'Turn Off Camera' : 'Turn On Camera';
+      }
+    });
+
+    // End call
+    endCallBtn.addEventListener('click', () => {
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+      }
+      if (peerConnection) {
+        peerConnection.close();
+      }
+      if (socket) {
+        socket.emit('leave', roomId);
+        socket.disconnect();
+      }
+      window.location.href = 'dashboard.html';
+    });
+
+    window.onload = initCall;
+  </script>
+</body>
+</html>
